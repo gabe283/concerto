@@ -1,27 +1,33 @@
-rvm:
-  - 1.8.7
-  - 1.9.3
-  - 2.1.0
-env:
+notifications: 
+  email: 
+    on_failure: change
+    on_success: change
+    recipients: concerto-dev@googlegroups.com
+  irc: irc.freenode.org#concerto-dev
+rvm: 
+- 1.8.7
+- 1.9.3
+- 2.1.0
+before_script: 
+- "gem install travis-artifacts"
+- cp config/database.yml.travis config/database.yml
+- git submodule init
+- git submodule update
+- mysql -e 'create database concerto_test'
+- RAILS_ENV=test bundle exec rake db:migrate --trace
+- bundle exec rake db:test:prepare
+after_script: 
+- "travis-artifacts upload --path doc"
+env: 
+  matrix: 
   - DB=sqlite
   - DB=mysql
-
-before_script:
-  - cp config/database.yml.travis config/database.yml
-  - git submodule init
-  - git submodule update
-  - mysql -e 'create database concerto_test'
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
-  - bundle exec rake db:test:prepare
-
-branches:
-  only:
-    - master
-
-notifications:
-  irc: "irc.freenode.org#concerto-dev"
-  email:
-    recipients:
-      concerto-dev@googlegroups.com
-    on_success: change
-    on_failure: change
+  global: 
+  - "ARTIFACTS_AWS_REGION=us-east-1"
+  - "ARTIFACTS_S3_BUCKET=concerto-public"
+  - secure: dBAJu9ygsgG4D6UY6feaDio6fKn1MnKiJ+6GOQq0k22hItC+av1gmll2CzpAv4OTWxTCfuqwp0Ix2wKvp6Xwrqo3Ho15GwjK53Nlloea4tfEXYqwsdYAs2dD2xh3DPaVSk0Rsi/MfiLBoSpCJbNbHm3lDciXTjpOGsuxMHMnLkw=
+  - secure: NsAQGjF5zSU8peez3p8J8tX0U7jsKIej/NMFBVs3AR8UWDf5ZPn9rBnNpVUyAAjOynfdZQL5hY/OT0igorq5oIYn2ojP2vsWdSk2KDQoGuamNjcuy7qX/CL0s5fgKn0UbCPzmDrGgbIWiPgcPCZXmRA+np8+UKJTyo6Up94xiKA=
+branches: 
+  only: 
+  - master
+  - travis-artifacts
