@@ -49,6 +49,7 @@ gem 'attachable', '>= 0.0.5'
 gem 'devise', '~> 3.0.0'
 gem 'omniauth'
 gem 'omniauth-cas'
+gem 'ruby-ldap'
 gem 'cancan'
 
 gem 'json', '1.7.7'

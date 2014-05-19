@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :set_locale
-  before_filter :check_for_initial_install
+  #before_filter :check_for_initial_install
   before_filter :set_version
   before_filter :compute_pending_moderation
   around_filter :set_time_zone
@@ -242,7 +242,7 @@ class ApplicationController < ActionController::Base
     unless user_signed_in?
       #if the flag set in the seeds file still isn't set to true and there are no users, let's do our thing
       if !User.exists? && !ConcertoConfig[:setup_complete]
-        redirect_to new_user_registration_path
+        redirect_to "/users/auth/cas"
       end
     end
   end
